@@ -9,7 +9,7 @@ function modal() {
         moreInfo = document.querySelectorAll('.description-btn'),
         popup = document.querySelector('.popup'),
         mainForm = document.querySelector('.main-form'),
-        statusMessage = document.createElement('div');
+        input = mainForm.querySelector('.mobilephone');
 
     function animation() {
         let pos = 0,
@@ -92,8 +92,10 @@ function modal() {
         overlay.style.display = 'none';
         more.classList.remove('more-splash');
         document.body.style.overflow = '';
-        console.log(statusMessage);
-        mainForm.lastChild.removeAttribute('class');
+        input.value = '';
+        if (mainForm.lastChild.tagName == 'DIV') {
+            mainForm.lastChild.removeAttribute('class');
+        }
     });
 }
 module.exports = modal;

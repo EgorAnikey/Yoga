@@ -1,4 +1,8 @@
 function calc() {
+    let Browser = {
+        IE: (/trident/gi).test(navigator.userAgent) || (/msie/gi).test(navigator.userAgent),
+        Mobile: (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent))
+    };
     let persons = document.querySelectorAll('.counter-block-input')[0],
         restDays = document.querySelectorAll('.counter-block-input')[1],
         place = document.getElementById('select'),
@@ -36,6 +40,9 @@ function calc() {
         if (restDays.value == '' || this.value == '' ||
             restDays.value == '0' || this.value == '0') {
             totalValue.innerHTML = 0;
+        } else if (Browser.IE) {
+            // Do something related to Internet Explorer.
+            totalValue.innerHTML = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
         } else {
             total = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
             animateTotalValue(total);
@@ -50,6 +57,9 @@ function calc() {
         if (persons.value == '' || this.value == '' ||
             persons.value == '0' || this.value == '0') {
             totalValue.innerHTML = 0;
+        } else if (Browser.IE) {
+            // Do something related to Internet Explorer.
+            totalValue.innerHTML = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
         } else {
             total = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
             animateTotalValue(total);
@@ -59,8 +69,11 @@ function calc() {
         if (restDays.value == '' || persons.value == '' ||
             restDays.value == '0' || persons.value == '0') {
             totalValue.innerHTML = 0;
+        } else if (Browser.IE) {
+            // Do something related to Internet Explorer.
+            totalValue.innerHTML = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
         } else {
-            let total = daysSum * personsSum * 4000 * this.options[this.selectedIndex].value;
+            total = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
             animateTotalValue(total);
         }
     });

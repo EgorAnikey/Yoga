@@ -1587,6 +1587,10 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
 /***/ (function(module, exports) {
 
 function calc() {
+  var Browser = {
+    IE: /trident/gi.test(navigator.userAgent) || /msie/gi.test(navigator.userAgent),
+    Mobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)
+  };
   var persons = document.querySelectorAll('.counter-block-input')[0],
       restDays = document.querySelectorAll('.counter-block-input')[1],
       place = document.getElementById('select'),
@@ -1635,6 +1639,9 @@ function calc() {
 
     if (restDays.value == '' || this.value == '' || restDays.value == '0' || this.value == '0') {
       totalValue.innerHTML = 0;
+    } else if (Browser.IE) {
+      // Do something related to Internet Explorer.
+      totalValue.innerHTML = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
     } else {
       total = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
       animateTotalValue(total);
@@ -1649,6 +1656,9 @@ function calc() {
 
     if (persons.value == '' || this.value == '' || persons.value == '0' || this.value == '0') {
       totalValue.innerHTML = 0;
+    } else if (Browser.IE) {
+      // Do something related to Internet Explorer.
+      totalValue.innerHTML = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
     } else {
       total = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
       animateTotalValue(total);
@@ -1657,10 +1667,12 @@ function calc() {
   place.addEventListener('change', function () {
     if (restDays.value == '' || persons.value == '' || restDays.value == '0' || persons.value == '0') {
       totalValue.innerHTML = 0;
+    } else if (Browser.IE) {
+      // Do something related to Internet Explorer.
+      totalValue.innerHTML = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
     } else {
-      var _total = daysSum * personsSum * 4000 * this.options[this.selectedIndex].value;
-
-      animateTotalValue(_total);
+      total = daysSum * personsSum * 4000 * place.options[place.selectedIndex].value;
+      animateTotalValue(total);
     }
   });
 }
@@ -1679,32 +1691,29 @@ module.exports = calc;
 var _Promise = typeof Promise === 'undefined' ? __webpack_require__(/*! es6-promise */ "./node_modules/es6-promise/dist/es6-promise.js").Promise : Promise;
 
 function form() {
-  function getCorrectPhone(inputForm) {
-    inputForm.onkeydown = function (e) {
-      var key = e.keyCode || e.charCode;
-
-      if (inputForm.value.length != 17) {
-        if (key != 8 && key != 46 && inputForm.value.length == 7) {
-          inputForm.value += " ";
-        }
-
-        if (key != 8 && key != 46 && inputForm.value.length == 11) {
-          inputForm.value += " ";
-        }
-
-        if (key != 8 && key != 46 && inputForm.value.length == 14) {
-          inputForm.value += " ";
-        }
-
-        if (inputForm.value.length < 6 && (key == 8 || key == 46) && (key < 96 || key > 105)) {
-          return false;
-        } else if (inputForm.value.length >= 3 && (key < 96 || key > 105) && key != 8 && key != 46) {
-          return false;
-        }
-      } else if (key != 8 && key != 46) {
-        return false;
+  function prettyMask(prettyInput) {
+    var maska = "+375 (__)  ___ __ __";
+    prettyInput.addEventListener('input', function () {
+      if (!/\d$/.test(this.value)) {
+        this.value = this.value.slice(0, -1);
       }
-    };
+
+      var i = 0;
+      var val = this.value.replace(/\D/g, '');
+
+      if (this.value.length < 7) {
+        this.value = '+375 (';
+      } else {
+        this.value = maska.replace(/./g, function (a) {
+          return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a;
+        });
+      }
+    });
+    prettyInput.addEventListener('mouseup', function (e) {
+      prettyInput.value = '+375 (';
+      e.preventDefault();
+      prettyInput.setSelectionRange(6, 6);
+    });
   }
 
   var message = {
@@ -1717,10 +1726,7 @@ function form() {
       statusMessage = document.createElement('div'),
       contactForm = document.querySelector('#form');
   inputPhone.forEach(function (item) {
-    item.addEventListener('focus', function () {
-      item.value = "+375 ";
-      getCorrectPhone(item);
-    });
+    prettyMask(item);
   });
 
   function sendForm(elem) {
@@ -1758,8 +1764,8 @@ function form() {
 
 
       function clearInput() {
-        for (var i = 0; i < document.querySelectorAll('input').length; i++) {
-          document.querySelectorAll('input')[i].value = '';
+        for (var i = 0; i < elem.querySelectorAll('input').length; i++) {
+          elem.querySelectorAll('input')[i].value = '';
         }
       }
 
@@ -1804,7 +1810,7 @@ function modal() {
       moreInfo = document.querySelectorAll('.description-btn'),
       popup = document.querySelector('.popup'),
       mainForm = document.querySelector('.main-form'),
-      statusMessage = document.createElement('div');
+      input = mainForm.querySelector('.mobilephone');
 
   function animation() {
     var pos = 0,
@@ -1884,8 +1890,11 @@ function modal() {
     overlay.style.display = 'none';
     more.classList.remove('more-splash');
     document.body.style.overflow = '';
-    console.log(statusMessage);
-    mainForm.lastChild.removeAttribute('class');
+    input.value = '';
+
+    if (mainForm.lastChild.tagName == 'DIV') {
+      mainForm.lastChild.removeAttribute('class');
+    }
   });
 }
 

@@ -1,27 +1,29 @@
 function form() {
-    function getCorrectPhone(inputForm) {
-        inputForm.onkeydown = function (e) {
-            let key = e.keyCode || e.charCode;
-            if (inputForm.value.length != 17) {
-                if (key != 8 && key != 46 && inputForm.value.length == 7) {
-                    inputForm.value += " ";
-                }
-                if (key != 8 && key != 46 && inputForm.value.length == 11) {
-                    inputForm.value += " ";
-                }
-                if (key != 8 && key != 46 && inputForm.value.length == 14) {
-                    inputForm.value += " ";
-                }
-                if (inputForm.value.length < 6 && (key == 8 || key == 46) && (key < 96 || key > 105)) {
-                    return false;
-                } else if ((inputForm.value.length >= 3) && (key < 96 || key > 105) && (key != 8 && key != 46)) {
-                    return false;
-                }
-            } else if (key != 8 && key != 46) {
-                return false;
+
+    function prettyMask(prettyInput) {
+        let maska = "+375 (__)  ___ __ __";
+        prettyInput.addEventListener('input', function () {
+            if (!/\d$/.test(this.value)) {
+                this.value = this.value.slice(0, -1);
             }
-        };
+            let i = 0;
+            let val = this.value.replace(/\D/g, '');
+            if (this.value.length < 7) {
+                this.value = '+375 (';
+            } else {
+                this.value = maska.replace(/./g, function (a) {
+                    return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) :
+                        i >= val.length ? "" : a;
+                });
+            }
+        });
+        prettyInput.addEventListener('mouseup', (e) => {
+            prettyInput.value = '+375 (';
+            e.preventDefault();
+            prettyInput.setSelectionRange(6, 6);
+        });
     }
+
     let message = {
         loading: 'Загрузка...',
         success: 'Спасибо! Скоро мы с вами свяжемся!',
@@ -33,10 +35,7 @@ function form() {
         contactForm = document.querySelector('#form');
 
     inputPhone.forEach(function (item) {
-        item.addEventListener('focus', function () {
-            item.value = "+375 ";
-            getCorrectPhone(item);
-        });
+        prettyMask(item);
     });
 
     function sendForm(elem) {
@@ -70,8 +69,8 @@ function form() {
                 });
             } //postForm
             function clearInput() {
-                for (let i = 0; i < document.querySelectorAll('input').length; i++) {
-                    document.querySelectorAll('input')[i].value = '';
+                for (let i = 0; i < elem.querySelectorAll('input').length; i++) {
+                    elem.querySelectorAll('input')[i].value = '';
                 }
             }
 
