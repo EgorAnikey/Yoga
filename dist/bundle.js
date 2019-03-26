@@ -2107,7 +2107,7 @@ module.exports = tabs;
 /***/ (function(module, exports) {
 
 function timer() {
-  var deadline = '2019-03-27';
+  var deadline = '2019-03-27T00:00:00';
 
   function getNullInDate(date) {
     date = date < 10 ? '0' + date : date;
@@ -2117,13 +2117,13 @@ function timer() {
   function getTimeRemaining(endtime) {
     var t = Date.parse(endtime) - Date.parse(new Date());
 
-    if (t <= 0) {
+    if (t <= 0 || isNaN(t)) {
       t = 0;
     }
 
     var seconds = getNullInDate(Math.floor(t / 1000 % 60)),
         minutes = getNullInDate(Math.floor(t / 1000 / 60 % 60)),
-        hours = getNullInDate(Math.floor(t / (1000 * 60 * 60)) - 3);
+        hours = getNullInDate(Math.floor(t / (1000 * 60 * 60)));
     return {
       'total': t,
       'hours': hours,
