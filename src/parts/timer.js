@@ -1,6 +1,5 @@
 function timer() {
-    let deadline = '2019-10-21';
-
+    let deadline = '2019-03-27';
     function getNullInDate(date) {
         date = date < 10 ? '0' + date : date;
         return date;
@@ -13,7 +12,8 @@ function timer() {
         }
         let seconds = getNullInDate(Math.floor((t / 1000) % 60)),
             minutes = getNullInDate(Math.floor((t / 1000 / 60) % 60)),
-            hours = getNullInDate(Math.floor((t / (1000 * 60 * 60))));
+            hours = getNullInDate(Math.floor((t / (1000 * 60 * 60)))-3);
+
 
         return {
             'total': t,
